@@ -3,18 +3,15 @@ package com.example.testgithub;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 
 import org.w3c.dom.Text;
 
-public class Main2Activity extends AppCompatActivity {
+public class Main3Activity_yeona extends AppCompatActivity {
 
-    View view;
-    Text text;
-
+    Text a;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main3_yeona);
     }
 }
