@@ -12,6 +12,9 @@ import org.w3c.dom.Text;
 public class MainActivity extends AppCompatActivity {
 
     TextView text;
+    TextView test1;
+
+    View view;
     Spinner spinner;
 
     @Override
