@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     View view;
     Spinner spinner;
 
+    View vlew2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
