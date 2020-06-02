@@ -14,6 +14,7 @@ public class Main2Activity extends AppCompatActivity {
     Text text;
 
     TextView textview;
+    Text text1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
