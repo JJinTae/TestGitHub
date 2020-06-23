@@ -1,8 +1,11 @@
+# start of project
+
+
 # TimeTable
-<br>사용자가 시간표를 추가하여 설정된 시간에 진동과 벨소리가 작동되며 알람이 울리도록하는 기능이다.
-<br>- 시간표를 추가하여 새로운 알람을 등록한다.
-<br>- 알람이 설정된 시간이되면 AlarmReceiver가 호출되고 AlarmService를 실행한다.
-<br>- 알람을 종료하기 위해 다시 AlarmReceiver를 호출하여 AlarmService를 정지시킨다.
+사용자가 시간표를 추가하여 설정된 시간에 진동과 벨소리가 작동되며 알람이 울리도록하는 기능이다.
+- 시간표를 추가하여 새로운 알람을 등록한다.
+- 알람이 설정된 시간이되면 AlarmReceiver가 호출되고 AlarmService를 실행한다.
+- 알람을 종료하기 위해 다시 AlarmReceiver를 호출하여 AlarmService를 정지시킨다.
 
 TimeTable은 (링크)TimeTableView, TimeTableActivity, EditActivity, AlarmReceiver, AlarmService 로 나눠서 설명할 것이다.
 
@@ -492,12 +495,103 @@ public class AlarmService extends Service {
 
 ## AttendanceRateActivity.Java
 MakeYouStudy에서 출석률을 저장하는 역할을 수행한다.
-MakeYouStudy에서는 데이터를 Database에서 불러오기 때문에 데이터를 불러오는 Code를 생략하고 Android의 강력한 OpenSource Chart인 [MPchart]([https://github.com/PhilJay/MPAndroidChart](https://github.com/PhilJay/MPAndroidChart))위주로 알아보도록 하겠다.
-MakeYouStudy에서는 Barchart와 PieChart를 사용하였다.
+MakeYouStudy에서는 데이터를 Database에서 불러오기 때문에 데이터를 불러오는 Code를 생략하고 Android의 좋은 OpenSource Chart인 [MPAndroidChart]([https://github.com/PhilJay/MPAndroidChart](https://github.com/PhilJay/MPAndroidChart))위주로 알아보도록 하겠다.
+> MakeYouStudy에서는 Barchart와 PieChart를 사용하였다.
 
 build.gradle(Module:**app**) dependency에 다음을 추가한다.
 ~~~java
 dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
+~~~
+**AttendanceRateActivity in Layout.xml**
+~~~java
+<com.github.mikephil.charting.charts.PieChart
+android:id="@+id/piechart"
+android:layout_width="match_parent"
+android:layout_height="250dp">
+</com.github.mikephil.charting.charts.PieChart>
+
+<com.github.mikephil.charting.charts.BarChart
+android:id="@+id/barchart"
+android:layout_width="match_parent"
+android:layout_height="350dp">
+</com.github.mikephil.charting.charts.BarChart>
+~~~
+~~~java
+public class AttendanceRateActivity extends AppCompatActivity {
+	// chart 참조 객체 선언
+    PieChart pieChart;
+    BarChart barChart;
+    ...
+~~~
+~~~java
+// PieChart
+pieChart.setUsePercentValues(true);  
+pieChart.getDescription().setEnabled(false);  
+pieChart.setExtraOffsets(5, 5, 5, 5);  
+  
+pieChart.setDragDecelerationFrictionCoef(0.5f);  
+  
+pieChart.setHoleColor(Color.WHITE);  
+pieChart.setTransparentCircleRadius(55f);  
+  
+yValues.add(new PieEntry(AllCheck,"출석"));  
+yValues.add(new PieEntry(AllTotal,"미출석"));  
+  
+// 그래프 제목 지우기  
+Description piedescription = new Description();  
+piedescription.setEnabled(false);  
+pieChart.setDescription(piedescription);  
+pieChart.getLegend().setEnabled(false);  
+  
+pieChart.animateY(1500, Easing.EaseOutBounce); // 애니메이션  
+  
+PieDataSet pieDataSet = new PieDataSet(yValues, "");  
+pieDataSet.setSliceSpace(3f);  
+pieDataSet.setSelectionShift(12f);  
+pieDataSet.setColors(checkColor);  
+  
+PieData pieData = new PieData(pieDataSet);  
+pieData.setValueTextSize(10f);  
+pieData.setValueTextColor(Color.YELLOW);  
+  
+pieChart.setData(pieData);
+~~~
+
+~~~java
+XAxis xAxis = barChart.getXAxis();  
+YAxis yLAxis = barChart.getAxisLeft();  
+YAxis yRAxis = barChart.getAxisRight();  
+  
+// Y축 오른쪽 비활성화  
+yRAxis.setDrawLabels(false);  
+yRAxis.setDrawAxisLine(false);  
+yRAxis.setDrawGridLines(false);  
+  
+// Y축 왼쪽 설정  
+yLAxis.setDrawLabels(false);  
+yLAxis.setDrawAxisLine(false);  
+yLAxis.setAxisMaximum(100f);  
+  
+// X축 설정  
+xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE); // x값 표시 위치  
+xAxis.setDrawGridLines(false); // x축 GridLinexAxis.setDrawAxisLine(false);  
+xAxis.setTextSize(15f);  
+xAxis.setValueFormatter(new IndexAxisValueFormatter(weekdays));  
+  
+barChart.getDescription().setEnabled(false); // 그래프 제목 삭제  
+barChart.getLegend().setDrawInside(false);  
+barChart.getLegend().setEnabled(false); // 그래프 범례 삭제  
+  
+barChart.setPinchZoom(false);  
+barChart.setScaleEnabled(false);  
+barChart.setDoubleTapToZoomEnabled(false);  
+barChart.animateY(1500, Easing.EaseOutBounce);  
+  
+BarDataSet bardataset = new BarDataSet(Daycheck, "");  
+BarData barData = new BarData(bardataset);  
+bardataset.setColors(weekColor);  
+  
+barChart.setData(barData);
 ~~~
