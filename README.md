@@ -1,6 +1,3 @@
-# start of project
-
-
 # TimeTable
 사용자가 시간표를 추가하여 설정된 시간에 진동과 벨소리가 작동되며 알람이 울리도록하는 기능이다.
 - 시간표를 추가하여 새로운 알람을 등록한다.
@@ -10,7 +7,7 @@
 TimeTable은 (링크)TimeTableView, TimeTableActivity, EditActivity, AlarmReceiver, AlarmService 로 나눠서 설명할 것이다.
 
 ## TimeTableView
-TimeTableView를 사용하기에 앞서 build.gradle(Module:**project**) 파일에 다음을 추가합니다.
+TimeTableView를 사용하기에 앞서 build.gradle(Module:**project**) 파일에 다음을 추가한다.
 ~~~java
 allprojects {
     repositories {
@@ -22,7 +19,7 @@ allprojects {
 > github에서 프로젝트를 Clon or Download 했을 때는 직접 ProjectView를 Project로 변경하면 수정할 수 있습니다.
 > ![Projectmodule2](https://user-images.githubusercontent.com/46085058/85412389-7cb93d00-b5a4-11ea-95f1-0d0cf25c5061.png) 
 
-build.gradle(Module:**app**) dependency에 다음을 추가합니다.
+build.gradle(Module:**app**) dependency에 다음을 추가한다.
 ~~~java
 dependencies {
     implementation 'com.github.tlaabs:TimetableView:1.0.3-fx1'
@@ -63,8 +60,8 @@ TimeTableView의 header속성을 변경할 수 있습니다.
 > ~~~
 
 ## TimeTableActivity.Java
-TimeTableActivity의 주요 기능은 시간표를 표시하고 알람을 등록해주는 역할을 수행합니다.
-기존 AlarmManger에 등록된 알람과의 충돌을 방지하기 위해서 기존의 알람을 모두 삭제한 후 재등록합니다.
+TimeTableActivity의 주요 기능은 시간표를 표시하고 알람을 등록해주는 역할을 수행한다.
+기존 AlarmManger에 등록된 알람과의 충돌을 방지하기 위해서 기존의 알람을 모두 삭제한 후 재등록 한다.
 ~~~java
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +94,9 @@ protected void onCreate(Bundle savedInstanceState) {
     });
 }
 ~~~
-알람을 등록, 수정, 삭제 기능을 수행하기 위해서 EditActivity에서 받아온 data를 활용합니다.
+알람을 등록, 수정, 삭제 기능을 수행하기 위해서 EditActivity에서 받아온 data를 활용한다.
 받아온 data는 timetable.createSaveData() 를 활용하여 Json형식으로 저장할 수 있습니다.
-Json형식으로 바뀐 data를 Database에 저장합니다.
+Json형식으로 바뀐 data를 Database에 저장한다.
 ~~~java
 @Override
 protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -134,6 +131,7 @@ protected void onActivityResult(int requestCode, int resultCode, @Nullable Inten
     }
 ~~~
 > Json형식
+> 
 > ![Json형식](https://user-images.githubusercontent.com/46085058/85429692-12ab9280-b5ba-11ea-882b-b958e299604f.PNG)
 
 #### Method
@@ -280,9 +278,8 @@ TimeTableActivity로 생성, 수정 및 삭제를 구별하여 intent를 전송�
 ## AlarmReceiver.Java
 AlarmReceiver는 Alarm Broadcast Message를 수신하는 역할을 수행한다.
 
-AlarmReceiver는 Broadcast를 수신하기 위해서 새로운 Java파일을 생성할 때 BroadcastReceiver를 extends해야 한다.
-
 **AlarmReceiver.Java 생성**
+AlarmReceiver는 Broadcast를 수신하기 위해서 새로운 Java파일을 생성할 때 BroadcastReceiver를 extends해야 한다.
 ![Creat_AlarmReceiver](https://user-images.githubusercontent.com/46085058/85443237-fb75a080-b5cb-11ea-8766-094b58e3bd87.png)
 ![extends_AlarmReceiver](https://user-images.githubusercontent.com/46085058/85443431-38da2e00-b5cc-11ea-98a4-b99fe66d631a.png)
 BroadcastReceiver를 extends하였기 때문에 onReceive() 를 선언 해주어야한다.
@@ -299,14 +296,14 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 		...
+		// intent에 담겨져있는 값들을 받아온다.
         int weeks = intent.getIntExtra("weekday", -1);
         int reqCode = intent.getIntExtra("reqCode", -1);
         String state = intent.getStringExtra("state");
+        
+        Intent sIntent = new Intent(context, AlarmService.class); // Service로 보낼 intent
 
-        Intent sIntent = new Intent(context, AlarmService.class);
-
-        if(state.equals("off")){ // 삭제 버튼을 클릭했을 때
-
+        if(state.equals("off")){ // 알람을 종료하는 state
             sIntent.putExtra("state", "off");
             sIntent.putExtra("reqCode", reqCode);
             // Oreo(26) 버전 이후부터는 Background 에서 실행을 금지하기 때문에 Foreground 에서 실행해야 함
@@ -317,13 +314,13 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
             return;
         }
-        else if(state.equals("reset")){
+        else if(state.equals("reset")){ // Service의 Media컨트롤을 위한 state
             Log.d(TAG, "reset " + reqCode + " 가 해제 되었습니다.");
         }
-        else if(weeks != nweeks){ // 오늘이 설정한 요일이 아닐 때
+        else if(weeks != nweeks){ // 오늘이 설정한 요일이 아닐 때 아무것도 수행하지 않음
             return;
         }
-        else if(weeks == nweeks) { // 오늘이 설정한 요일 일 때
+        else if(weeks == nweeks) { // 오늘이 설정한 요일 일 때 알람이 울림
             sIntent.putExtra("state", "on");
             sIntent.putExtra("weekday", weeks);
             // Oreo(26) 버전 이후부터는 Background 에서 실행을 금지하기 때문에 Foreground 에서 실행해야 함
@@ -335,7 +332,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             
             ...PowerManger
             
-            try { // 출석체크 액티비티를 실행해준다.
+            try { // 오늘이 설정한 요일일 때 출석체크 액티비티를 실행해준다.
                 Intent intent2 = new Intent(context, AttendanceCheckActivity.class);
                 intent2.putExtra("reqCode", reqCode);
                 intent2.putExtra("weekday", weeks);
@@ -345,7 +342,9 @@ public class AlarmReceiver extends BroadcastReceiver {
             } catch (PendingIntent.CanceledException e) {
                 e.printStackTrace();
             }
+            
             ...PowerManger
+            
             }
         }
     }
@@ -376,5 +375,129 @@ public void onReceive(Context context, Intent intent) {
             sCpuWakeLock = null;
         }
     }
+}
+~~~
+##  AlarmService.Java
+정해진 시간에 알람이 울렸을 때 Service를 통하여 Vibrator와 Media를 재생할 수 있도록 해준다.
+
+**AlarmService.java 생성**
+AlarmService는 새로운 Java파일을 생성할 때 Service를 extends해야 한다.
+![Create_Service](https://user-images.githubusercontent.com/46085058/85454120-8d36db00-b5d7-11ea-80e9-3dc31e2bb292.png)
+
+처음 Service를 extends한 Java파일을 생성하게되면 오류가 뜨는데 아래와 같이 `onBind()`와 `onStartCommand()` 를 선언해주어야 한다.
+~~~java
+public class AlarmService extends Service {
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {return null;}
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+}
+~~~
+
+`onStartCommand()`는 Service가 호출되었을 때 실행된다.
+AlarmService에서는 주로 `MediaPlayer()`의 재생, 중지 및 정지와, `Vibrate()`의 재생 및 정지를 수행하고 추가로 Android Oreo버전 이상부터는 foreground실행을 위해 notificationchannel을 띄워주는 역할을 수행한다.
+~~~java
+public class AlarmService extends Service {
+
+    private MediaPlayer mediaPlayer;
+    private Vibrator vibrator;
+    private boolean isRunning;
+    private int pausePosition; // mediaPlayer pause 시점 저장
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) { return null; }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE); // System에서 Vibrater Service를 받아온다.
+		// intent값을 받아온다.
+        String state = intent.getStringExtra("state");
+        int reqCode = intent.getIntExtra("reqCode", -1);
+        int weeks = intent.getIntExtra("weekday", -1);
+
+        if (state.equals("on")) {
+            // 알람음 재생 OFF, 알람음 시작 상태
+            this.mediaPlayer = MediaPlayer.create(this, R.raw.alarm); // 재생할 음악을 정한다.
+            this.mediaPlayer.start(); // 음악을 재생
+            this.vibrator.vibrate(new long[]{500, 1000, 500, 1000}, 0); // 진동 재생
+
+            this.isRunning = true;
+
+            // notification 클릭시에도 출석체크를 할 수 있도록 액티비티를 실행
+            Intent intent1 = new Intent(getApplicationContext(), AttendanceCheckActivity.class);
+            intent1.putExtra("reqCode", reqCode);
+            intent1.putExtra("weekday", weeks);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            // Oreo(26) 버전 이후 버전부터는 notificationchannel 이 필요함
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                
+                String channelId =  createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+                Notification notification = builder.setOngoing(true)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentIntent(pendingIntent) 
+                        .build();
+                startForeground(1, notification);
+            }
+        } else if (this.isRunning && state.equals("off")) {
+            // 알람음 재생 ON, 알람음 중지 상태
+            this.mediaPlayer.stop(); // 음악을 정지
+            this.mediaPlayer.reset(); // mediaPlayer를 리셋
+            this.mediaPlayer.release(); // mediaPlayer 해제
+            this.vibrator.cancel(); // 진동 정지
+
+            this.isRunning = false;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                stopForeground(true); // 실행중인 foreground 정지
+            }
+        } else if (state.equals("pause")){
+            // AttendanceCheck시에 음악 일시 정지
+            if(mediaPlayer!=null){
+                this.mediaPlayer.pause(); // 음악을 일시정지
+                pausePosition = mediaPlayer.getCurrentPosition(); // 음악의 일시정지 타이밍을 저장
+                this.vibrator.cancel();
+            }
+        } else if (state.equals("restart")){
+            if(!mediaPlayer.isPlaying()){
+                mediaPlayer.seekTo(pausePosition); // 음악이 일시정지된 타이밍을 찾음
+                mediaPlayer.start();
+                this.vibrator.vibrate(new long[]{500, 1000, 500, 1000}, 0);
+            }
+        }
+        return START_NOT_STICKY;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private String createNotificationChannel() {
+        String channelId = "Alarm";
+        String channelName = getString(R.string.app_name);
+
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE);
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        channel.setSound(null, null);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        manager.createNotificationChannel(channel);
+
+        return channelId;
+    }
+}
+~~~
+> 참고자료 : [`MediaPlayer()`]([https://developer.android.com/guide/topics/media/mediaplayer?hl=ko](https://developer.android.com/guide/topics/media/mediaplayer?hl=ko)), [`Vibrator()`]([https://developer88.tistory.com/103](https://developer88.tistory.com/103)), [`NotificationChannel`]([https://developer.android.com/training/notify-user/channels?hl=ko](https://developer.android.com/training/notify-user/channels?hl=ko))
+
+## AttendanceRateActivity.Java
+MakeYouStudy에서 출석률을 저장하는 역할을 수행한다.
+MakeYouStudy에서는 데이터를 Database에서 불러오기 때문에 데이터를 불러오는 Code를 생략하고 Android의 강력한 OpenSource Chart인 [MPchart]([https://github.com/PhilJay/MPAndroidChart](https://github.com/PhilJay/MPAndroidChart))위주로 알아보도록 하겠다.
+MakeYouStudy에서는 Barchart와 PieChart를 사용하였다.
+
+build.gradle(Module:**app**) dependency에 다음을 추가한다.
+~~~java
+dependencies {
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
 ~~~
