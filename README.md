@@ -1,8 +1,8 @@
 # TimeTable
 <br>사용자가 시간표를 추가하여 설정된 시간에 진동과 벨소리가 작동되며 알람이 울리도록하는 기능이다.
-- 시간표를 추가하여 새로운 알람을 등록한다.
-- 알람이 설정된 시간이되면 AlarmReceiver가 호출되고 AlarmService를 실행한다.
-- 알람을 종료하기 위해 다시 AlarmReceiver를 호출하여 AlarmService를 정지시킨다.
+<br>- 시간표를 추가하여 새로운 알람을 등록한다.
+<br>- 알람이 설정된 시간이되면 AlarmReceiver가 호출되고 AlarmService를 실행한다.
+<br>- 알람을 종료하기 위해 다시 AlarmReceiver를 호출하여 AlarmService를 정지시킨다.
 
 TimeTable은 (링크)TimeTableView, TimeTableActivity, EditActivity, AlarmReceiver, AlarmService 로 나눠서 설명할 것이다.
 
