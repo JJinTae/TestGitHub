@@ -1,7 +1,4 @@
-# start of project
-
-
-# TimeTable
+# 시간표
 사용자가 시간표를 추가하여 설정된 시간에 진동과 벨소리가 작동되며 알람이 울리도록하는 기능이다.
 - 시간표를 추가하여 새로운 알람을 등록한다.
 - 알람이 설정된 시간이되면 AlarmReceiver가 호출되고 AlarmService를 실행한다.
@@ -28,7 +25,7 @@ dependencies {
     implementation 'com.github.tlaabs:TimetableView:1.0.3-fx1'
 }
 ~~~
-## TimeTableView in Layout.xml
+**TimeTableView in Layout.xml**
 ~~~java
 <com.github.tlaabs.timetableview.TimetableView  
     android:id="@+id/timetable"  
@@ -44,7 +41,7 @@ dependencies {
 ~~~
 > 더 많은 [TimeTable layout 설정](https://github.com/tlaabs/TimetableView#attribute-descriptions)
 
-#### app:header_title 변경
+ app:header_title 변경
 TimeTableView의 header속성을 변경할 수 있습니다.
 ~~~java
 <string-array name="my_header_title">  
@@ -62,7 +59,7 @@ TimeTableView의 header속성을 변경할 수 있습니다.
 > app:row_count = "8" // row_count가 item 갯수 보다 1 더 커야 합니다. 
 > ~~~
 
-## TimeTableActivity.Java
+**TimeTableActivity.Java**
 TimeTableActivity의 주요 기능은 시간표를 표시하고 알람을 등록해주는 역할을 수행한다.
 기존 AlarmManger에 등록된 알람과의 충돌을 방지하기 위해서 기존의 알람을 모두 삭제한 후 재등록 한다.
 ~~~java
@@ -99,7 +96,7 @@ protected void onCreate(Bundle savedInstanceState) {
 ~~~
 알람을 등록, 수정, 삭제 기능을 수행하기 위해서 EditActivity에서 받아온 data를 활용한다.
 받아온 data는 timetable.createSaveData() 를 활용하여 Json형식으로 저장할 수 있습니다.
-Json형식으로 바뀐 data를 Database에 저장한다.
+- Json형식으로 바뀐 data를 Database에 저장한다.
 ~~~java
 @Override
 protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -221,7 +218,7 @@ if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
 }
 ~~~
 
-## EditActivity.Java
+**EditActivity.Java**
 EditActivity의 주요기능은 시간표를 생성, 수정 및 삭제하는 역할을 수행한다.
 
 EditActivity는 시간표 생성과 수정을 구분하여야 한다. 특히 수정시에는 이미 등록되어있는 시간표의 정보를 불러오는 기능을 수행한다.
@@ -278,7 +275,7 @@ TimeTableActivity로 생성, 수정 및 삭제를 구별하여 intent를 전송�
 @Override public void onClick(View v) {...}
 ~~~
 
-## AlarmReceiver.Java
+**AlarmReceiver.Java**
 AlarmReceiver는 Alarm Broadcast Message를 수신하는 역할을 수행한다.
 
 **AlarmReceiver.Java 생성**
@@ -298,8 +295,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-		...
-		// intent에 담겨져있는 값들을 받아온다.
+        ...
+        // intent에 담겨져있는 값들을 받아온다.
         int weeks = intent.getIntExtra("weekday", -1);
         int reqCode = intent.getIntExtra("reqCode", -1);
         String state = intent.getStringExtra("state");
@@ -493,7 +490,7 @@ public class AlarmService extends Service {
 ~~~
 > 참고자료 : [`MediaPlayer()`]([https://developer.android.com/guide/topics/media/mediaplayer?hl=ko](https://developer.android.com/guide/topics/media/mediaplayer?hl=ko)), [`Vibrator()`]([https://developer88.tistory.com/103](https://developer88.tistory.com/103)), [`NotificationChannel`]([https://developer.android.com/training/notify-user/channels?hl=ko](https://developer.android.com/training/notify-user/channels?hl=ko))
 
-## AttendanceRateActivity.Java
+## 출석률 체크
 MakeYouStudy에서 출석률을 저장하는 역할을 수행한다.
 MakeYouStudy에서는 데이터를 Database에서 불러오기 때문에 데이터를 불러오는 Code를 생략하고 Android의 좋은 OpenSource Chart인 [MPAndroidChart]([https://github.com/PhilJay/MPAndroidChart](https://github.com/PhilJay/MPAndroidChart))위주로 알아보도록 하겠다.
 > MakeYouStudy에서는 Barchart와 PieChart를 사용하였다.
@@ -518,17 +515,59 @@ android:layout_width="match_parent"
 android:layout_height="350dp">
 </com.github.mikephil.charting.charts.BarChart>
 ~~~
+**AttendanceRateActivity.Java**
+차트의 객체를 선언한다.
 ~~~java
 public class AttendanceRateActivity extends AppCompatActivity {
-	// chart 참조 객체 선언
+    // chart 참조 객체 선언
     PieChart pieChart;
     BarChart barChart;
     ...
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_attendance_rate);
+        
+        pieChart = (PieChart)findViewById(R.id.piechart);
+        barChart = (BarChart)findViewById(R.id.barchart);
 ~~~
+- 데이터를 담을 list또는 변수를 선언
+- Barchart의 Y값을 바꾸기 위한 list 선언
+- Color를 지정해주기 위한 list 선언
+~~~java
+ArrayList<BarEntry> Daycheck = new ArrayList<>();  // Barchart에 담을 BarEntry list
+ArrayList<PieEntry> yValues = new ArrayList<>();  // Piechart에 담을 PieEntry list
+final String[] weekdays = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}; // Barchart의 Y값을 바꾸기 위한 list
+
+// Color를 지정해주기 위한 list
+final int[] checkColor = {ContextCompat.getColor(this, R.color.Check), ContextCompat.getColor(this, R.color.Total)};
+final int[] weekColor = {  
+	ContextCompat.getColor(this, R.color.Mon),  
+	ContextCompat.getColor(this, R.color.Tue),  
+	ContextCompat.getColor(this, R.color.Wed),  
+	ContextCompat.getColor(this, R.color.Thu),  
+	ContextCompat.getColor(this, R.color.Fri),  
+	ContextCompat.getColor(this, R.color.Sat),  
+	ContextCompat.getColor(this, R.color.Sun)  
+};  
+~~~
+임시 데이터 값
+~~~java
+int AllCheck = 3;
+int AllTotal = 5;
+Daycheck.add(new BarEntry(30f, 0));
+Daycheck.add(new BarEntry(40f, 1));
+Daycheck.add(new BarEntry(30f, 2));
+Daycheck.add(new BarEntry(20f, 3));
+Daycheck.add(new BarEntry(15f, 4));
+Daycheck.add(new BarEntry(50f, 5));
+Daycheck.add(new BarEntry(31f, 6));
+~~~
+
 ~~~java
 // PieChart
-pieChart.setUsePercentValues(true);  
-pieChart.getDescription().setEnabled(false);  
+pieChart.setUsePercentValues(true);  // pieChart를 Percent로 표시할지 설정
+pieChart.getDescription().setEnabled(false);  // 
 pieChart.setExtraOffsets(5, 5, 5, 5);  
   
 pieChart.setDragDecelerationFrictionCoef(0.5f);  
@@ -558,11 +597,12 @@ pieData.setValueTextColor(Color.YELLOW);
   
 pieChart.setData(pieData);
 ~~~
-
+Barchart는 Y축이 Left와 Right가 있기 때문에 잘 고려해서 사용하여야 한다.
 ~~~java
-XAxis xAxis = barChart.getXAxis();  
-YAxis yLAxis = barChart.getAxisLeft();  
-YAxis yRAxis = barChart.getAxisRight();  
+// BarChart
+XAxis xAxis = barChart.getXAxis();  // barChart의 X축
+YAxis yLAxis = barChart.getAxisLeft();  // barChart의 Left_Y축
+YAxis yRAxis = barChart.getAxisRight();  // barChart의 Right_Y축
   
 // Y축 오른쪽 비활성화  
 yRAxis.setDrawLabels(false);  
@@ -572,22 +612,23 @@ yRAxis.setDrawGridLines(false);
 // Y축 왼쪽 설정  
 yLAxis.setDrawLabels(false);  
 yLAxis.setDrawAxisLine(false);  
-yLAxis.setAxisMaximum(100f);  
+yLAxis.setAxisMaximum(100f);  // Y축의 최댓값을 정해준다.
   
 // X축 설정  
 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE); // x값 표시 위치  
 xAxis.setDrawGridLines(false); // x축 GridLinexAxis.setDrawAxisLine(false);  
 xAxis.setTextSize(15f);  
-xAxis.setValueFormatter(new IndexAxisValueFormatter(weekdays));  
+xAxis.setValueFormatter(new IndexAxisValueFormatter(weekdays)); // 그래프 Y축 포맷 변경
   
 barChart.getDescription().setEnabled(false); // 그래프 제목 삭제  
-barChart.getLegend().setDrawInside(false);  
+barChart.getLegend().setDrawInside(false);  // 범례 삭제
 barChart.getLegend().setEnabled(false); // 그래프 범례 삭제  
-  
+// 그래프 zoom 애니메이션  
 barChart.setPinchZoom(false);  
 barChart.setScaleEnabled(false);  
 barChart.setDoubleTapToZoomEnabled(false);  
-barChart.animateY(1500, Easing.EaseOutBounce);  
+
+barChart.animateY(1500, Easing.EaseOutBounce); // 그래프 애니메이션  
   
 BarDataSet bardataset = new BarDataSet(Daycheck, "");  
 BarData barData = new BarData(bardataset);  
