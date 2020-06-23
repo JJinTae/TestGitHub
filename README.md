@@ -211,3 +211,6 @@ if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
 }
 ~~~
 ![extends_AlarmReceiver](https://user-images.githubusercontent.com/46085058/85444766-a3d83480-b5cd-11ea-9f89-153a5bbdac48.png)
+
+
+![test](https://user-images.githubusercontent.com/46085058/85445065-f0237480-b5cd-11ea-93ef-efc1a6e6ea13.PNG)
