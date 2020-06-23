@@ -210,3 +210,4 @@ if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 }
 ~~~
+![extends_AlarmReceiver](https://user-images.githubusercontent.com/46085058/85444766-a3d83480-b5cd-11ea-9f89-153a5bbdac48.png)
