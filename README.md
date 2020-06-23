@@ -214,3 +214,6 @@ if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
 
 
 ![test](https://user-images.githubusercontent.com/46085058/85445065-f0237480-b5cd-11ea-93ef-efc1a6e6ea13.PNG)
+
+알람이 해당하는 요일과 일치하여 알람이 울려야할 때 사용자의 화면을 깨워준다.
+이는 절전모드 상태에서 CPU자원을 획득하기 때문에 필히 Release 해주어야한다.
