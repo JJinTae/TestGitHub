@@ -25,7 +25,7 @@ dependencies {
     implementation 'com.github.tlaabs:TimetableView:1.0.3-fx1'
 }
 ~~~
-**TimeTableView in Layout.xml**
+####TimeTableView in Layout.xml
 ~~~java
 <com.github.tlaabs.timetableview.TimetableView  
     android:id="@+id/timetable"  
@@ -59,7 +59,7 @@ TimeTableView의 header속성을 변경할 수 있습니다.
 > app:row_count = "8" // row_count가 item 갯수 보다 1 더 커야 합니다. 
 > ~~~
 
-**TimeTableActivity.Java**
+####TimeTableActivity.Java
 TimeTableActivity의 주요 기능은 시간표를 표시하고 알람을 등록해주는 역할을 수행한다.
 기존 AlarmManger에 등록된 알람과의 충돌을 방지하기 위해서 기존의 알람을 모두 삭제한 후 재등록 한다.
 ~~~java
@@ -218,7 +218,7 @@ if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
 }
 ~~~
 
-**EditActivity.Java**
+####EditActivity.Java
 EditActivity의 주요기능은 시간표를 생성, 수정 및 삭제하는 역할을 수행한다.
 
 EditActivity는 시간표 생성과 수정을 구분하여야 한다. 특히 수정시에는 이미 등록되어있는 시간표의 정보를 불러오는 기능을 수행한다.
@@ -275,7 +275,7 @@ TimeTableActivity로 생성, 수정 및 삭제를 구별하여 intent를 전송�
 @Override public void onClick(View v) {...}
 ~~~
 
-**AlarmReceiver.Java**
+####AlarmReceiver.Java
 AlarmReceiver는 Alarm Broadcast Message를 수신하는 역할을 수행한다.
 
 **AlarmReceiver.Java 생성**
@@ -501,7 +501,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
 ~~~
-**AttendanceRateActivity in Layout.xml**
+####AttendanceRateActivity in Layout.xml
 ~~~java
 <com.github.mikephil.charting.charts.PieChart
 android:id="@+id/piechart"
@@ -515,7 +515,7 @@ android:layout_width="match_parent"
 android:layout_height="350dp">
 </com.github.mikephil.charting.charts.BarChart>
 ~~~
-**AttendanceRateActivity.Java**
+####AttendanceRateActivity.Java
 차트의 객체를 선언한다.
 ~~~java
 public class AttendanceRateActivity extends AppCompatActivity {
